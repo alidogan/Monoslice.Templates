@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Ali Dogan",
+  "classifications": [
+    "Modular Monolith",
+    "Module"
+  ],
+  "identity": "Monoslice.Module.CSharp",
+  "groupIdentity": "Monoslice.Module",
+  "name": "Monoslice Module",
+  "description": "Adds a module (implementation, Contracts and unit tests) to a Monoslice solution. Run it from the solution root.",
+  "shortName": "ms-module",
+  "sourceName": "ModuleName",
+  "preferNameDirectory": false,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sources": [
+    {
+      "exclude": [
+        ".template.config/**",
+        "**/bin/**",
+        "**/obj/**"
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    {
+      "path": "src/Modules/ModuleName/ModuleName/ModuleName.csproj"
+    },
+    {
+      "path": "src/Modules/ModuleName/ModuleName.Contracts/ModuleName.Contracts.csproj"
+    },
+    {
+      "path": "tests/Modules/ModuleName.UnitTests/ModuleName.UnitTests.csproj"
+    }
+  ],
+  "postActions": [
+    {
+      "description": "Restore NuGet packages required by the module.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    },
+    {
+      "description": "Add the module projects to the solution.",
+      "manualInstructions": [
+        {
+          "text": "Add the generated projects to the solution with 'dotnet sln add'."
+        }
+      ],
+      "actionId": "D396686C-DE0E-4DE6-906D-291CD29FC5DE",
+      "args": {
+        "primaryOutputIndexes": "0;1",
+        "solutionFolder": "src/Modules/ModuleName"
+      },
+      "continueOnError": true
+    },
+    {
+      "description": "Add the unit test project to the solution.",
+      "manualInstructions": [
+        {
+          "text": "Add the test project to the solution with 'dotnet sln add'."
+        }
+      ],
+      "actionId": "D396686C-DE0E-4DE6-906D-291CD29FC5DE",
+      "args": {
+        "primaryOutputIndexes": "2",
+        "solutionFolder": "tests/Modules"
+      },
+      "continueOnError": true
+    },
+    {
+      "description": "Next steps.",
+      "manualInstructions": [
+        {
+          "text": "The Api references every module automatically. Register the module in src/Bootstrapper/Api/ModuleRegistry.cs ('new <Name>.<Name>Module(),') and create its first migration: dotnet ef migrations add InitialCreate -p src/Modules/<Name>/<Name> -s src/Bootstrapper/Api -o Data/Migrations"
+        }
+      ],
+      "actionId": "AC1156F7-BB77-4DB8-B28F-24EEBCCA1E5C",
+      "continueOnError": true
+    }
+  ]
+}

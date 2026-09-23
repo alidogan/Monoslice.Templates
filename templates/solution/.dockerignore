@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/Internal/Generated/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.user
+**/node_modules/
+.git/
+tests/
+artifacts/

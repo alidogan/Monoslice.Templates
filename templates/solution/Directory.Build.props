@@ -1,0 +1,36 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+  </ItemGroup>
+  <!--#if (TemplateDevOnly)-->
+
+  <!--
+    Template development only: this block is removed from generated solutions.
+    Build another variant with e.g. `dotnet build -p:TemplateDatabase=SqlServer -p:TemplateBroker=RabbitMq -p:TemplateAuth=none`.
+  -->
+  <PropertyGroup>
+    <TemplateDatabase Condition="'$(TemplateDatabase)' == ''">PostgreSQL</TemplateDatabase>
+    <TemplateBroker Condition="'$(TemplateBroker)' == ''">none</TemplateBroker>
+    <TemplateAuth Condition="'$(TemplateAuth)' == ''">jwt</TemplateAuth>
+    <TemplateSample Condition="'$(TemplateSample)' == ''">true</TemplateSample>
+    <DefineConstants Condition="'$(TemplateDatabase)' == 'PostgreSQL'">$(DefineConstants);UsePostgreSQL</DefineConstants>
+    <DefineConstants Condition="'$(TemplateDatabase)' == 'SqlServer'">$(DefineConstants);UseSqlServer</DefineConstants>
+    <DefineConstants Condition="'$(TemplateBroker)' == 'RabbitMq'">$(DefineConstants);UseBroker;UseRabbitMq</DefineConstants>
+    <DefineConstants Condition="'$(TemplateBroker)' == 'AzureServiceBus'">$(DefineConstants);UseBroker;UseAzureServiceBus</DefineConstants>
+    <DefineConstants Condition="'$(TemplateAuth)' == 'jwt'">$(DefineConstants);UseAuth</DefineConstants>
+    <DefineConstants Condition="'$(TemplateSample)' == 'true'">$(DefineConstants);IncludeSample</DefineConstants>
+  </PropertyGroup>
+  <!--#endif-->
+</Project>

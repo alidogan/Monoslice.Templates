@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  template-source:
+    name: Template source
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: templates/solution
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: templates/solution/global.json
+
+      - name: Build and test the default variant
+        run: dotnet test
+
+  variants:
+    name: Generated solution (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant:
+          - default
+          - sqlserver
+          - rabbitmq
+          - servicebus
+          - minimal
+          - sqlserver-rabbitmq-noauth
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # Generates the solution, adds a module and features, then runs format, build and all tests.
+      - name: Generate and test
+        run: ./scripts/test-templates.sh ${{ matrix.variant }}
+        env:
+          DOCKER_BUILD: ${{ matrix.variant == 'default' && '1' || '0' }}

@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Ali Dogan",
+  "classifications": [
+    "Modular Monolith",
+    "Vertical Slice",
+    "Feature"
+  ],
+  "identity": "Monoslice.Feature.CSharp",
+  "groupIdentity": "Monoslice.Feature",
+  "name": "Monoslice Feature",
+  "description": "Adds a vertical slice (endpoint, command or query, validator, handler and mapper) to a module. Run it from the module project folder.",
+  "shortName": "ms-feature",
+  "sourceName": "FeatureName",
+  "preferNameDirectory": false,
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "forms": {
+    "lowerCase": {
+      "identifier": "lowerCaseInvariant"
+    }
+  },
+  "symbols": {
+    "RootNamespace": {
+      "type": "bind",
+      "binding": "msbuild:RootNamespace",
+      "replaces": "ModuleName",
+      "defaultValue": "ModuleName"
+    },
+    "Aggregate": {
+      "type": "parameter",
+      "datatype": "text",
+      "isRequired": true,
+      "description": "The aggregate (plural) the feature belongs to, e.g. Orders. Used as folder, namespace and route segment.",
+      "replaces": "AggregateName",
+      "fileRename": "AggregateName"
+    },
+    "AggregateRoute": {
+      "type": "derived",
+      "valueSource": "Aggregate",
+      "valueTransform": "lowerCase",
+      "replaces": "aggregateroute"
+    },
+    "Kind": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "command",
+      "description": "Whether the feature changes state (command) or reads it (query).",
+      "choices": [
+        {
+          "choice": "command",
+          "description": "A POST endpoint with a command, validator and transactional handler"
+        },
+        {
+          "choice": "query",
+          "description": "A GET endpoint with a query and a non-transactional handler"
+        }
+      ]
+    },
+    "IsCommand": {
+      "type": "computed",
+      "value": "(Kind == \"command\")"
+    },
+    "IsQuery": {
+      "type": "computed",
+      "value": "(Kind == \"query\")"
+    }
+  },
+  "sources": [
+    {
+      "exclude": [
+        ".template.config/**"
+      ],
+      "modifiers": [
+        {
+          "condition": "(IsCommand)",
+          "exclude": [
+            "AggregateName/Features/FeatureName/FeatureNameQuery.cs"
+          ]
+        },
+        {
+          "condition": "(IsQuery)",
+          "exclude": [
+            "AggregateName/Features/FeatureName/FeatureNameCommand.cs"
+          ]
+        }
+      ]
+    }
+  ],
+  "postActions": [
+    {
+      "description": "Next steps.",
+      "manualInstructions": [
+        {
+          "text": "Implement the generated handler and mapper; the endpoint is discovered automatically."
+        }
+      ],
+      "actionId": "AC1156F7-BB77-4DB8-B28F-24EEBCCA1E5C",
+      "continueOnError": true
+    }
+  ]
+}

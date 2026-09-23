@@ -1,0 +1,247 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Ali Dogan",
+  "classifications": [
+    "Web",
+    "API",
+    "Modular Monolith",
+    "Vertical Slice",
+    "Wolverine",
+    "Aspire"
+  ],
+  "identity": "Monoslice.Solution.CSharp",
+  "groupIdentity": "Monoslice.Solution",
+  "name": "Monoslice Modular Monolith",
+  "description": "A production-ready modular monolith for .NET: vertical slices with explicit mappers, Wolverine (mediator, transactional outbox, optional RabbitMQ/Azure Service Bus), EF Core with a schema per module, .NET Aspire, Serilog and OpenTelemetry.",
+  "shortName": "ms-sln",
+  "sourceName": "ModularMonolith",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "symbols": {
+    "Database": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "postgresql",
+      "description": "The database used by all modules (one schema per module).",
+      "choices": [
+        {
+          "choice": "postgresql",
+          "description": "PostgreSQL"
+        },
+        {
+          "choice": "sqlserver",
+          "description": "SQL Server"
+        }
+      ]
+    },
+    "UsePostgreSQL": {
+      "type": "computed",
+      "value": "(Database == \"postgresql\")"
+    },
+    "UseSqlServer": {
+      "type": "computed",
+      "value": "(Database == \"sqlserver\")"
+    },
+    "Broker": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "none",
+      "description": "Message broker for integration events. 'none' keeps all messaging in-process (durable local queues + outbox).",
+      "choices": [
+        {
+          "choice": "none",
+          "description": "In-process only"
+        },
+        {
+          "choice": "rabbitmq",
+          "description": "RabbitMQ"
+        },
+        {
+          "choice": "azureservicebus",
+          "description": "Azure Service Bus"
+        }
+      ]
+    },
+    "UseBroker": {
+      "type": "computed",
+      "value": "(Broker != \"none\")"
+    },
+    "UseRabbitMq": {
+      "type": "computed",
+      "value": "(Broker == \"rabbitmq\")"
+    },
+    "UseAzureServiceBus": {
+      "type": "computed",
+      "value": "(Broker == \"azureservicebus\")"
+    },
+    "Auth": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "jwt",
+      "description": "Authentication for the API.",
+      "choices": [
+        {
+          "choice": "jwt",
+          "description": "JWT bearer tokens from any OpenID Connect provider (Keycloak for local development)"
+        },
+        {
+          "choice": "none",
+          "description": "No authentication"
+        }
+      ]
+    },
+    "UseAuth": {
+      "type": "computed",
+      "value": "(Auth == \"jwt\")"
+    },
+    "IncludeSample": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Include the sample Catalog module with its tests."
+    },
+    "UseDocker": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Add a Dockerfile for the API and a docker-compose.yml with its dependencies."
+    },
+    "Ci": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "github",
+      "description": "Continuous integration pipeline to generate.",
+      "choices": [
+        {
+          "choice": "github",
+          "description": "GitHub Actions"
+        },
+        {
+          "choice": "azure",
+          "description": "Azure Pipelines"
+        },
+        {
+          "choice": "none",
+          "description": "No pipeline"
+        }
+      ]
+    },
+    "UseGitHubCi": {
+      "type": "computed",
+      "value": "(Ci == \"github\")"
+    },
+    "UseAzureCi": {
+      "type": "computed",
+      "value": "(Ci == \"azure\")"
+    },
+    "TemplateDevOnly": {
+      "type": "computed",
+      "value": "false"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "If specified, skips the automatic restore of the solution on create."
+    }
+  },
+  "sources": [
+    {
+      "exclude": [
+        ".template.config/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/Internal/Generated/**",
+        "**/TestResults/**",
+        "**/*.user",
+        ".vs/**",
+        ".idea/**",
+        "Directory.Build.targets"
+      ],
+      "modifiers": [
+        {
+          "condition": "(UsePostgreSQL)",
+          "exclude": [
+            "**/Migrations/SqlServer/**"
+          ]
+        },
+        {
+          "condition": "(UseSqlServer)",
+          "exclude": [
+            "**/Migrations/PostgreSql/**"
+          ]
+        },
+        {
+          "condition": "(!IncludeSample)",
+          "exclude": [
+            "src/Modules/Catalog/**",
+            "tests/Modules/Catalog.UnitTests/**",
+            "tests/IntegrationTests/Catalog/**"
+          ]
+        },
+        {
+          "condition": "(!UseAuth)",
+          "exclude": [
+            "src/AppHost/Realms/**",
+            "src/Bootstrapper/Api/Infrastructure/AuthenticationExtensions.cs",
+            "tests/IntegrationTests/Infrastructure/TestAuthHandler.cs"
+          ]
+        },
+        {
+          "condition": "(!UseDocker)",
+          "exclude": [
+            "src/Bootstrapper/Api/Dockerfile",
+            ".dockerignore",
+            "docker-compose.yml",
+            "docker/**"
+          ]
+        },
+        {
+          "condition": "(!UseAzureServiceBus)",
+          "exclude": [
+            "docker/servicebus/**"
+          ]
+        },
+        {
+          "condition": "(!UseGitHubCi)",
+          "exclude": [
+            ".github/**"
+          ]
+        },
+        {
+          "condition": "(!UseAzureCi)",
+          "exclude": [
+            "azure-pipelines.yml"
+          ]
+        },
+        {
+          "condition": "(!UseRabbitMq || !IncludeSample)",
+          "exclude": [
+            "tests/IntegrationTests/Messaging/**"
+          ]
+        }
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    {
+      "path": "ModularMonolith.slnx"
+    }
+  ],
+  "postActions": [
+    {
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this solution.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    }
+  ]
+}

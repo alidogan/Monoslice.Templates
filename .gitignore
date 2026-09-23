@@ -1,0 +1,11 @@
+bin/
+obj/
+artifacts/
+TestResults/
+.vs/
+.vscode/
+.idea/
+*.user
+*.nupkg
+.DS_Store
+**/Internal/Generated/

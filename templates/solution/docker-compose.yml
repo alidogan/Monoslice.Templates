@@ -1,0 +1,149 @@
+# Runs the API with its dependencies in containers:  docker compose up --build
+# For day-to-day development prefer the Aspire AppHost:  dotnet run --project src/AppHost
+services:
+#if (UsePostgreSQL)
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+#else
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD:-Development_Passw0rd}
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+#endif
+
+  cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  seq:
+    image: datalust/seq:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+    ports:
+      - "5341:80"
+#if (UseAuth)
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      # Tokens are issued for the address clients use; the API reads the metadata over the compose network.
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/AppHost/Realms:/opt/keycloak/data/import:ro
+#endif
+#if (UseRabbitMq)
+
+  messaging:
+    image: rabbitmq:4-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+#endif
+#if (UseAzureServiceBus)
+
+  # Azure Service Bus emulator (local development only) and the SQL Edge instance it requires.
+  servicebus-sql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SERVICEBUS_SQL_PASSWORD:-Development_Passw0rd}
+
+  messaging:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SQL_SERVER: servicebus-sql
+      MSSQL_SA_PASSWORD: ${SERVICEBUS_SQL_PASSWORD:-Development_Passw0rd}
+    volumes:
+      - ./docker/servicebus/Config.json:/ServiceBus_Emulator/ConfigFiles/Config.json:ro
+    ports:
+      - "5672:5672"
+      - "5300:5300"
+    depends_on:
+      - servicebus-sql
+#endif
+
+  api:
+    build:
+      context: .
+      dockerfile: src/Bootstrapper/Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+#if (UsePostgreSQL)
+      ConnectionStrings__appdb: Host=db;Database=appdb;Username=postgres;Password=${DB_PASSWORD:-postgres}
+#else
+      ConnectionStrings__appdb: Server=db;Database=appdb;User Id=sa;Password=${DB_PASSWORD:-Development_Passw0rd};TrustServerCertificate=true
+#endif
+      ConnectionStrings__cache: cache:6379
+      Database__MigrateOnStartup: "true"
+      Seq__ServerUrl: http://seq:5341
+#if (UseAuth)
+      Authentication__Authority: http://localhost:8080/realms/app
+      Authentication__MetadataAddress: http://keycloak:8080/realms/app/.well-known/openid-configuration
+      Authentication__RequireHttpsMetadata: "false"
+#endif
+#if (UseRabbitMq)
+      ConnectionStrings__messaging: amqp://guest:guest@messaging:5672
+#endif
+#if (UseAzureServiceBus)
+      ConnectionStrings__messaging: Endpoint=sb://messaging;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+      Messaging__ManagementConnectionString: Endpoint=sb://messaging:5300;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+#endif
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+#if (UseAuth)
+      keycloak:
+        condition: service_started
+#endif
+#if (UseRabbitMq)
+      messaging:
+        condition: service_healthy
+#endif
+#if (UseAzureServiceBus)
+      messaging:
+        condition: service_started
+#endif
+
+volumes:
+  db-data:

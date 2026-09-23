@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared.Contracts\Shared.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WolverineFx" />
+    <PackageReference Include="WolverineFx.EntityFrameworkCore" />
+    <PackageReference Include="WolverineFx.FluentValidation" />
+    <PackageReference Include="JasperFx.RuntimeCompiler" />
+    <!--#if (UsePostgreSQL)-->
+    <PackageReference Include="WolverineFx.Postgresql" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageReference Include="WolverineFx.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageReference Include="WolverineFx.RabbitMQ" />
+    <!--#endif-->
+    <!--#if (UseAzureServiceBus)-->
+    <PackageReference Include="WolverineFx.AzureServiceBus" />
+    <!--#endif-->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/AppHost/AppHost.csproj" />
+    <Project Path="src/ServiceDefaults/ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/Bootstrapper/">
+    <Project Path="src/Bootstrapper/Api/Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Shared/Shared.csproj" />
+    <Project Path="src/Shared/Shared.Contracts/Shared.Contracts.csproj" />
+  </Folder>
+  <!--#if (IncludeSample)-->
+  <Folder Name="/src/Modules/Catalog/">
+    <Project Path="src/Modules/Catalog/Catalog/Catalog.csproj" />
+    <Project Path="src/Modules/Catalog/Catalog.Contracts/Catalog.Contracts.csproj" />
+  </Folder>
+  <!--#endif-->
+  <Folder Name="/tests/">
+    <Project Path="tests/ArchitectureTests/ArchitectureTests.csproj" />
+    <Project Path="tests/IntegrationTests/IntegrationTests.csproj" />
+  </Folder>
+  <!--#if (IncludeSample)-->
+  <Folder Name="/tests/Modules/">
+    <Project Path="tests/Modules/Catalog.UnitTests/Catalog.UnitTests.csproj" />
+  </Folder>
+  <!--#endif-->
+</Solution>

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <!--#if (UsePostgreSQL)-->
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageReference Include="Testcontainers.MsSql" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageReference Include="Testcontainers.RabbitMq" />
+    <!--#endif-->
+    <PackageReference Include="Respawn" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bootstrapper\Api\Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

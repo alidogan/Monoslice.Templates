@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The public API of the Catalog module. Other modules may only reference this project. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

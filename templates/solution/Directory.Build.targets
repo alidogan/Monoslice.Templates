@@ -1,0 +1,7 @@
+<Project>
+  <!-- Template development only: this file is not part of generated solutions. -->
+  <ItemGroup>
+    <Compile Remove="**/Migrations/SqlServer/**" Condition="'$(TemplateDatabase)' != 'SqlServer'" />
+    <Compile Remove="**/Migrations/PostgreSql/**" Condition="'$(TemplateDatabase)' != 'PostgreSQL'" />
+  </ItemGroup>
+</Project>

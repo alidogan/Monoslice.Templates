@@ -1,0 +1,32 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.5.4">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>ModularMonolith-AppHost</UserSecretsId>
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);ASPIRE010</MSBuildWarningsAsMessages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bootstrapper\Api\Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--#if (UsePostgreSQL)-->
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <!--#endif-->
+    <PackageReference Include="Aspire.Hosting.Redis" />
+    <!--#if (UseAuth)-->
+    <PackageReference Include="Aspire.Hosting.Keycloak" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <!--#endif-->
+    <!--#if (UseAzureServiceBus)-->
+    <PackageReference Include="Aspire.Hosting.Azure.ServiceBus" />
+    <!--#endif-->
+  </ItemGroup>
+
+</Project>

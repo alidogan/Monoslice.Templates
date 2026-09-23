@@ -1,0 +1,15 @@
+global using Catalog.Data;
+global using FluentValidation;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Routing;
+global using Microsoft.EntityFrameworkCore;
+global using Shared.Contracts.Messaging;
+global using Shared.Contracts.Pagination;
+global using Shared.Contracts.Results;
+global using Shared.Domain;
+global using Shared.Endpoints;
+global using Shared.Persistence;
+global using Shared.Results;
+global using Wolverine;

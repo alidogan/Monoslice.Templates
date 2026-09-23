@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageId>Monoslice.Templates</PackageId>
+    <!-- Overridden by the release workflow: dotnet pack -p:PackageVersion=1.2.3 -->
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>Monoslice – Modular Monolith templates for .NET</Title>
+    <Authors>Ali Dogan</Authors>
+    <Description>dotnet new templates for a production-ready modular monolith: vertical slices with explicit mappers, Wolverine (mediator, transactional outbox, optional RabbitMQ or Azure Service Bus), EF Core with a schema per module, .NET Aspire, Serilog, OpenTelemetry and tests. Includes ms-sln (solution), ms-module and ms-feature.</Description>
+    <PackageTags>dotnet-new;templates;modular-monolith;modulith;vertical-slice;wolverine;aspire;ddd;efcore;minimal-api</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/alidogan/Monoslice.Templates</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alidogan/Monoslice.Templates</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>See https://github.com/alidogan/Monoslice.Templates/blob/main/CHANGELOG.md</PackageReleaseNotes>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <!-- Keep dot files such as .editorconfig, .gitignore and .config/dotnet-tools.json. -->
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU5110;NU5111;NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="templates\**\*" Exclude="templates\**\bin\**;templates\**\obj\**;templates\**\.vs\**;templates\**\.idea\**;templates\**\TestResults\**;templates\**\Internal\Generated\**;templates\**\*.user;templates\**\.DS_Store" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

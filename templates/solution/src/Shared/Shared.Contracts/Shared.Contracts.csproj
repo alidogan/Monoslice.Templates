@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Dependency-free building blocks that module Contracts projects may reference. -->
+</Project>

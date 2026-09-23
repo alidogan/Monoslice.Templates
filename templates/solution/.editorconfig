@@ -1,0 +1,95 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,xml,csproj,props,targets,slnx}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+# Namespaces and usings
+csharp_style_namespace_declarations = file_scoped:warning
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_using_directive_placement = outside_namespace:warning
+
+# Language style
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_braces = true:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_readonly_field = true:warning
+
+# Naming: _camelCase for private fields, PascalCase for constants
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+dotnet_naming_rule.constants_pascal.symbols = constants
+dotnet_naming_rule.constants_pascal.style = pascal_case
+dotnet_naming_rule.constants_pascal.severity = warning
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_rule.static_readonly_pascal.symbols = static_readonly_fields
+dotnet_naming_rule.static_readonly_pascal.style = pascal_case
+dotnet_naming_rule.static_readonly_pascal.severity = warning
+dotnet_naming_symbols.static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readonly
+
+# IDE rules enforced during build (EnforceCodeStyleInBuild)
+dotnet_diagnostic.IDE0161.severity = warning # file-scoped namespaces
+dotnet_diagnostic.IDE0011.severity = warning # braces
+dotnet_diagnostic.IDE0065.severity = warning # using placement
+dotnet_diagnostic.IDE1006.severity = warning # naming
+
+# Meziantou: vertical slices keep request/command/result records together in one file
+dotnet_diagnostic.MA0048.severity = none
+# ConfigureAwait is not needed in ASP.NET Core applications
+dotnet_diagnostic.MA0004.severity = none
+# Minimal API lambdas and EF expressions read better without these
+dotnet_diagnostic.MA0026.severity = suggestion # TODO comments
+dotnet_diagnostic.MA0051.severity = suggestion # method too long
+dotnet_diagnostic.MA0016.severity = suggestion # prefer collection abstractions
+
+# CA rules that do not fit this style
+dotnet_diagnostic.CA1716.severity = none # identifiers that are keywords (e.g. Shared, Error)
+dotnet_diagnostic.CA1724.severity = none # type names that match namespaces (e.g. Result)
+dotnet_diagnostic.CA1062.severity = none # null checks for public arguments; nullable reference types cover this
+dotnet_diagnostic.CA1515.severity = none # make public types internal (handlers must be public for Wolverine)
+dotnet_diagnostic.CA1848.severity = suggestion # prefer LoggerMessage
+
+[tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none # underscores in test names
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.MA0004.severity = none
+
+[**/Migrations/**.cs]
+generated_code = true
+dotnet_diagnostic.IDE0161.severity = none
+dotnet_diagnostic.IDE0065.severity = none
+
+# Wolverine handler code written by `dotnet run -- codegen write`
+[**/Internal/Generated/**.cs]
+generated_code = true

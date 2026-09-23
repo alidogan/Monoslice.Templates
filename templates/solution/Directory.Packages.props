@@ -1,0 +1,114 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AspireVersion>13.5.4</AspireVersion>
+    <AspNetCoreVersion>10.0.12</AspNetCoreVersion>
+    <EfCoreVersion>10.0.12</EfCoreVersion>
+    <WolverineVersion>6.39.1</WolverineVersion>
+  </PropertyGroup>
+
+  <ItemGroup Label="Messaging">
+    <PackageVersion Include="WolverineFx" Version="$(WolverineVersion)" />
+    <PackageVersion Include="WolverineFx.EntityFrameworkCore" Version="$(WolverineVersion)" />
+    <PackageVersion Include="WolverineFx.FluentValidation" Version="$(WolverineVersion)" />
+    <PackageVersion Include="JasperFx.RuntimeCompiler" Version="5.0.0" />
+    <!--#if (UsePostgreSQL)-->
+    <PackageVersion Include="WolverineFx.Postgresql" Version="$(WolverineVersion)" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageVersion Include="WolverineFx.SqlServer" Version="$(WolverineVersion)" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageVersion Include="WolverineFx.RabbitMQ" Version="$(WolverineVersion)" />
+    <!--#endif-->
+    <!--#if (UseAzureServiceBus)-->
+    <PackageVersion Include="WolverineFx.AzureServiceBus" Version="$(WolverineVersion)" />
+    <!--#endif-->
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Data">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfCoreVersion)" />
+    <!--#if (UsePostgreSQL)-->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="$(AspireVersion)" />
+    <!--#endif-->
+    <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.10.0" />
+    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="$(AspireVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Label="Web">
+    <!--#if (UseAuth)-->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <!--#endif-->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.17.8" />
+  </ItemGroup>
+
+  <ItemGroup Label="Observability">
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+    <PackageVersion Include="Serilog.Sinks.Seq" Version="9.1.0" />
+    <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.19.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.19.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.19.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.10.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Aspire hosting">
+    <!--#if (UsePostgreSQL)-->
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="$(AspireVersion)" />
+    <!--#endif-->
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
+    <!--#if (UseAuth)-->
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="13.5.4-preview.1.26464.4" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
+    <!--#endif-->
+    <!--#if (UseAzureServiceBus)-->
+    <PackageVersion Include="Aspire.Hosting.Azure.ServiceBus" Version="$(AspireVersion)" />
+    <!--#endif-->
+  </ItemGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="xunit.v3" Version="4.0.1" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="NSubstitute" Version="6.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
+    <!--#if (UsePostgreSQL)-->
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.15.0" />
+    <!--#endif-->
+    <!--#if (UseSqlServer)-->
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.15.0" />
+    <!--#endif-->
+    <!--#if (UseRabbitMq)-->
+    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.15.0" />
+    <!--#endif-->
+    <PackageVersion Include="Respawn" Version="7.0.0" />
+    <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Analyzers">
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.289" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="5.0.0" />
+  </ItemGroup>
+</Project>

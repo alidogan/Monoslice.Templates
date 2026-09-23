@@ -1,0 +1,62 @@
+@api = http://localhost:5080
+//#if (UseAuth)
+@keycloak = http://localhost:8080
+
+### Get a token for the development user (alice / alice)
+# @name login
+POST {{keycloak}}/realms/app/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=app-dev&client_secret=app-dev-secret&username=alice&password=alice
+
+###
+@token = {{login.response.body.access_token}}
+//#endif
+
+### Health
+GET {{api}}/health
+//#if (IncludeSample)
+
+### Create a category
+# @name createCategory
+POST {{api}}/api/catalog/categories
+Content-Type: application/json
+//#if (UseAuth)
+Authorization: Bearer {{token}}
+//#endif
+
+{
+  "name": "Books",
+  "description": "Printed and digital books",
+  "displayOrder": 1,
+  "isActive": true
+}
+
+### Get the category (note the ETag response header)
+# @name getCategory
+GET {{api}}/api/catalog/categories/{{createCategory.response.body.id}}
+//#if (UseAuth)
+Authorization: Bearer {{token}}
+//#endif
+
+### Update the category (If-Match must be the current ETag)
+PUT {{api}}/api/catalog/categories/{{createCategory.response.body.id}}
+Content-Type: application/json
+If-Match: {{getCategory.response.headers.ETag}}
+//#if (UseAuth)
+Authorization: Bearer {{token}}
+//#endif
+
+{
+  "name": "Books & e-books",
+  "description": "Printed and digital books",
+  "displayOrder": 1,
+  "isActive": true
+}
+
+### List categories
+GET {{api}}/api/catalog/categories?page=1&pageSize=20
+//#if (UseAuth)
+Authorization: Bearer {{token}}
+//#endif
+//#endif

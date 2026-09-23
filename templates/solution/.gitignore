@@ -1,0 +1,21 @@
+## .NET
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+*.userprefs
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.DotSettings.user
+TestResults/
+coverage/
+
+## Wolverine: handler code written by `dotnet run -- codegen write` (the Dockerfile generates it)
+**/Internal/Generated/
+
+## OS
+.DS_Store
+Thumbs.db
